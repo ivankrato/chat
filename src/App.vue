@@ -12,12 +12,12 @@
             <div class="row">
                 <nav class="col-md-2 d-block bg-light sidebar">
                     <div class="sidebar-sticky">
-                        <RoomList/>
+                        <RoomList :roomList="roomList"/>
                     </div>
                 </nav>
 
                 <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
-                    <router-view/>
+                    <router-view :room="currentRoom" :username="username" />
                 </main>
             </div>
         </div>
@@ -28,14 +28,25 @@
 <script>
     import 'bootstrap-vue/dist/bootstrap-vue.css'
 
+    import axios from 'axios'
+    import apiUrl from './api'
+
     import RoomList from './components/RoomList'
     import UsernameModal from './components/UsernameModal'
 
     export default {
         name: 'app',
+        computed: {
+            currentRoom() {
+                return this.roomList.filter(room => {
+                    return room.id == this.$route.params.roomId;
+                })[0];
+            }
+        },
         data() {
             return {
-                username: ''
+                username: '',
+                roomList: []
             }
         },
         components: {
@@ -45,10 +56,11 @@
         created() {
             this.username = localStorage.getItem('username');
         },
-        mounted() {
+        async mounted() {
             if (!this.username) {
                 this.$refs.usernameModal.show();
             }
+            this.roomList = (await axios.get(apiUrl + 'rooms')).data.rooms;
         },
         methods: {
             saveUsername(username) {
@@ -83,6 +95,7 @@
     }
 
     main {
+        height: 100vh;
         padding-top: 60px;
     }
 
