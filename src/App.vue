@@ -1,29 +1,96 @@
 <template>
-  <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
+    <div>
+        <div class="container-fluid">
+            <nav class="navbar navbar-dark bg-dark flex-md-nowrap p-0 shadow fixed-top">
+                <span class="navbar-brand col-sm-3 col-md-2 mr-0" href="#">{{ username }}&nbsp;</span>
+                <ul class="navbar-nav px-3">
+                    <li class="nav-item text-nowrap">
+                        <a class="nav-link" @click="$refs.usernameModal.show();" href="#">Change name</a>
+                    </li>
+                </ul>
+            </nav>
+            <div class="row">
+                <nav class="col-md-2 d-block bg-light sidebar">
+                    <div class="sidebar-sticky">
+                        <RoomList/>
+                    </div>
+                </nav>
+
+                <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
+                    <router-view/>
+                </main>
+            </div>
+        </div>
+        <UsernameModal ref="usernameModal" :username="username" @save="saveUsername"/>
     </div>
-    <router-view/>
-  </div>
 </template>
 
-<style lang="scss">
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
-#nav {
-  padding: 30px;
-  a {
-    font-weight: bold;
-    color: #2c3e50;
-    &.router-link-exact-active {
-      color: #42b983;
+<script>
+    import 'bootstrap-vue/dist/bootstrap-vue.css'
+
+    import RoomList from './components/RoomList'
+    import UsernameModal from './components/UsernameModal'
+
+    export default {
+        name: 'app',
+        data() {
+            return {
+                username: ''
+            }
+        },
+        components: {
+            RoomList,
+            UsernameModal
+        },
+        created() {
+            this.username = localStorage.getItem('username');
+        },
+        mounted() {
+            if (!this.username) {
+                this.$refs.usernameModal.show();
+            }
+        },
+        methods: {
+            saveUsername(username) {
+                this.username = username;
+                localStorage.setItem('username', username);
+            }
+        }
     }
-  }
-}
+</script>
+
+<style lang="scss">
+    @import '~bootstrap/scss/bootstrap';
+
+    body {
+        font-size: .875rem;
+    }
+
+    .sidebar {
+        height: 100vh;
+        padding-top: 48px;
+        box-shadow: inset -1px 0 0 rgba(0, 0, 0, .1);
+
+        .nav-link {
+            font-weight: 500;
+            color: #333;
+
+            &.active,
+            &:hover {
+                color: #007bff;
+            }
+        }
+    }
+
+    main {
+        padding-top: 60px;
+    }
+
+    .navbar-brand {
+        padding-top: .75rem;
+        padding-bottom: .75rem;
+        font-size: 1rem;
+        background-color: rgba(0, 0, 0, .25);
+        box-shadow: inset -1px 0 0 rgba(0, 0, 0, .25);
+    }
 </style>
