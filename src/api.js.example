@@ -1,0 +1,5 @@
+let url = 'http://example.org/chat/v1/';
+let bearerToken = 'token';
+
+export {url, bearerToken};
+export default url;
