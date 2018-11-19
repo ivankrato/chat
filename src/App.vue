@@ -16,7 +16,7 @@
                     </div>
                 </nav>
 
-                <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
+                <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4 pb-4">
                     <router-view :room="currentRoom" :username="username" />
                 </main>
             </div>
