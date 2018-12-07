@@ -139,7 +139,6 @@
                 }
             },
             isMentioned(message) {
-                console.log(message);
                 if(typeof message.message === 'string') {
                     return message.message.indexOf('@' + this.username) > -1;
                 }
