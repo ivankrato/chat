@@ -52,11 +52,6 @@
             Message,
             Emoji
         },
-        watch: {
-            messages() {
-                //this.scrollToBottom();
-            }
-        },
         data() {
             return {
                 messages: [],
