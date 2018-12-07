@@ -9,7 +9,7 @@
                     </li>
                 </ul>
             </nav>
-            <input class="nav-trigger d-none" type="checkbox" id="nav-trigger" />
+            <input ref="navTrigger" class="nav-trigger d-none" type="checkbox" id="nav-trigger" />
             <label for="nav-trigger" class="d-sm-block d-md-none">
                 <span></span>
                 <span></span>
@@ -47,6 +47,14 @@
                 return this.roomList.filter(room => {
                     return room.id == this.$route.params.roomId;
                 })[0];
+            },
+            roomId() {
+                return this.$route.params.roomId;
+            }
+        },
+        watch: {
+            roomId() {
+                this.$refs.navTrigger.checked = false
             }
         },
         data() {
@@ -125,7 +133,7 @@
                 font-size: 20px;
                 position: absolute;
                 color: white;
-                top: 14px;
+                top: 16px;
                 right: calc(50% + 15px);
                 z-index: 1031;
 

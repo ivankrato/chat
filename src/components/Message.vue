@@ -75,7 +75,6 @@
             bottom: 0;
             left: 0;
             width: 3rem;
-            z-index: 2;
             display: inline-block;
             text-align: center;
         }
