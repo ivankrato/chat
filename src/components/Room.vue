@@ -110,6 +110,7 @@
                             message: message,
                             createdOn: Date.now()
                         });
+                        this.createColors(this.myMessages);
                         this.message = '';
                         await axios.post(apiUrl + 'rooms/' + this.room.id + '/messages', {
                             username: this.username,
@@ -134,7 +135,7 @@
                     if (typeof this.messageColors[message.username] === 'undefined') {
                         this.messageColors[message.username] = randDarkColor();
                     }
-                    message.color = this.messageColors[message.username];
+                    Vue.set(message, 'color', this.messageColors[message.username]);
                 }
             },
             isMentioned(message) {
