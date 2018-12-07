@@ -1,9 +1,9 @@
 <template>
-    <div :class="'message alert mr-4 mb-3' + (my ? ' my alert-success' : '') + (loading ? ' loading' : '')">
+    <div :class="'message alert mr-4 mb-3' + (my ? ' my alert-success' : '') + (message.error ? ' alert-danger' : '') + (mention ? ' alert-warning' : '') + (loading ? ' loading' : '')">
         <div class="avatar" :style="{backgroundColor: message.color}"><span>{{ getAvatar(message) }}</span></div>
         <div class="username">{{ message.username }} ({{ getDate(message) }})</div>
         {{ getMessage(message) }}
-        <PulseLoader v-if="loading"/>
+        <PulseLoader v-if="loading && typeof message.error === 'undefined'"/>
     </div>
 </template>
 
@@ -14,7 +14,7 @@
 
     export default {
         name: 'message',
-        props: ['message', 'my', 'loading'],
+        props: ['message', 'my', 'loading', 'mention'],
         components: {
             PulseLoader
         },
@@ -24,17 +24,19 @@
             },
             getMessage(message) {
                 let str = message.message;
-                let emojis = {
-                    ':D': '😃',
-                    ':P': '😛',
-                    ':\\)': '🙂',
-                    '=\\)': '🙂',
-                    ':\\(': '😥',
-                    ':\'\\(': '😥'
-                };
-                for(let emoji in emojis) {
-                    if(emojis.hasOwnProperty(emoji)) {
-                        str = str.replace(new RegExp('(^|\\s)' + emoji + '($|\\s)'), ' ' + emojis[emoji] + ' ')
+                if(typeof str === 'string') {
+                    let emojis = {
+                        ':D': '😃',
+                        ':P': '😛',
+                        ':\\)': '🙂',
+                        '=\\)': '🙂',
+                        ':\\(': '😥',
+                        ':\'\\(': '😥'
+                    };
+                    for(let emoji in emojis) {
+                        if(emojis.hasOwnProperty(emoji)) {
+                            str = str.replace(new RegExp('(^|\\s)' + emoji + '($|\\s)'), ' ' + emojis[emoji] + ' ')
+                        }
                     }
                 }
                 return str;
@@ -106,6 +108,12 @@
 
         &.loading {
             opacity: 0.5;
+        }
+
+        .v-spinner {
+            position: absolute;
+            top: calc(50% - 11px);
+            right: 3.5rem;
         }
     }
 </style>

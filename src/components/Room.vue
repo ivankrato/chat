@@ -7,7 +7,7 @@
                 {{ message.username }}: {{ message.message }}
                 <PulseLoader/>
             </Message>
-            <Message v-for="message in messages" :message="message" :my="message.username === username">
+            <Message v-for="message in messages" :message="message" :my="message.username === username" :mention="isMentioned(message)">
                 {{ message.username }}: {{ message.message }}
             </Message>
         </div>
@@ -26,6 +26,7 @@
     import GridLoader from 'vue-spinner/src/GridLoader'
     import Message from './Message'
     import Emoji from './Emoji';
+    import Vue from 'vue';
 
     let randDarkColor = () => {
         let lum = -0.25;
@@ -69,35 +70,59 @@
         methods: {
             async getMessages(append = true) {
                 if (append) {
-                    let newMessages = (await axios.get(apiUrl + 'rooms/' + this.room.id + '/messages', {
-                        params: {createdSince: this.messages[0].createdOn}
-                    })).data.messages;
-                    this.createColors(newMessages);
-                    this.messages = newMessages.concat(this.messages);
+                    try {
+                        let params = {};
+                        if (typeof this.messages[0] !== 'undefined') {
+                            params.createdSince = this.messages[0].createdOn;
+                        }
+                        let newMessages = (await axios.get(apiUrl + 'rooms/' + this.room.id + '/messages', {
+                            params: params
+                        })).data.messages;
+                        this.createColors(newMessages);
+                        this.messages = newMessages.concat(this.messages);
+                    }
+                    catch (ex) {
+                        console.error(ex);
+                        return;
+                    }
                 } else {
-                    this.messages = (await axios.get(apiUrl + 'rooms/' + this.room.id + '/messages')).data.messages;
-                    this.createColors(this.messages);
+                    try {
+                        console.error(ex);
+                        this.messages = (await axios.get(apiUrl + 'rooms/' + this.room.id + '/messages')).data.messages;
+                        this.createColors(this.messages);
+                    }
+                    catch (ex) {
+                        return;
+                    }
                 }
                 if (this.removeMyMessages) {
                     this.myMessages.length = 0;
                     this.removeMyMessages = false;
                 }
             },
-            sendMessage() {
+            async sendMessage() {
                 if (this.message !== '' && this.username !== '') {
-                    axios.post(apiUrl + 'rooms/' + this.room.id + '/messages', {
-                        username: this.username,
-                        message: this.message
-                    }).then(() => {
+                    try {
+                        let message = this.message;
+                        this.myMessages.unshift({
+                            id: '',
+                            username: this.username,
+                            message: message,
+                            createdOn: Date.now()
+                        });
+                        this.message = '';
+                        await axios.post(apiUrl + 'rooms/' + this.room.id + '/messages', {
+                            username: this.username,
+                            message: message
+                        });
                         this.removeMyMessages = true;
-                    });
-                    this.myMessages.unshift({
-                        id: '',
-                        username: this.username,
-                        message: this.message,
-                        createdOn: Date.now()
-                    });
-                    this.message = '';
+                    }
+                    catch (ex) {
+                        console.error(ex);
+                        if(typeof this.myMessages[0] !== 'undefined') {
+                            Vue.set(this.myMessages[0], 'error', true);
+                        }
+                    }
                 }
             },
             scrollToBottom() {
@@ -105,12 +130,19 @@
                 messagesEl.scrollTop = messagesEl.scrollHeight - messagesEl.clientHeight;
             },
             createColors(messages) {
-                for(let message of messages) {
-                    if(typeof this.messageColors[message.username] === 'undefined') {
+                for (let message of messages) {
+                    if (typeof this.messageColors[message.username] === 'undefined') {
                         this.messageColors[message.username] = randDarkColor();
                     }
                     message.color = this.messageColors[message.username];
                 }
+            },
+            isMentioned(message) {
+                console.log(message);
+                if(typeof message.message === 'string') {
+                    return message.message.indexOf('@' + this.username) > -1;
+                }
+                return false;
             }
         },
         mounted() {

@@ -9,7 +9,7 @@
                     </li>
                 </ul>
             </nav>
-            <input ref="navTrigger" class="nav-trigger d-none" type="checkbox" id="nav-trigger" />
+            <input ref="navTrigger" class="nav-trigger d-none" type="checkbox" id="nav-trigger"/>
             <label for="nav-trigger" class="d-sm-block d-md-none">
                 <span></span>
                 <span></span>
@@ -23,7 +23,7 @@
                 </nav>
 
                 <main role="main" class="col-sm-8 col-md-9 ml-sm-auto col-lg-10 px-4 pb-4">
-                    <router-view :room="currentRoom" :username="username" />
+                    <router-view :room="currentRoom" :username="username"/>
                 </main>
             </div>
         </div>
@@ -74,12 +74,24 @@
             if (!this.username) {
                 this.$refs.usernameModal.show();
             }
-            this.roomList = (await axios.get(apiUrl + 'rooms')).data.rooms;
+            this.getRoomList();
         },
         methods: {
             saveUsername(username) {
                 this.username = username;
                 localStorage.setItem('username', username);
+            },
+            async getRoomList() {
+                try {
+                    this.roomList = (await axios.get(apiUrl + 'rooms')).data.rooms;
+                }
+                catch (ex) {
+                    console.error(ex);
+                    console.log('Trying again');
+                    setTimeout(() => {
+                        this.getRoomList();
+                    }, 2000);
+                }
             }
         }
     }
@@ -87,16 +99,15 @@
 
 <style lang="scss">
     $theme-colors: (
-        "primary": #009688,
-        "dark": #35a79c,
-        "success": #83d0c9
+            "primary": #009688,
+            "dark": #35a79c,
+            "success": #83d0c9
     );
     $border-radius: 0;
     $border-radius-lg: 0;
     $border-radius-sm: 0;
 
     @import '~bootstrap/scss/bootstrap';
-
 
     body {
         font-size: .875rem;
@@ -132,7 +143,7 @@
     @media(max-width: map-get($container-max-widths, sm)) {
         .nav-trigger {
 
-            +label {
+            + label {
                 font-size: 20px;
                 position: absolute;
                 color: white;
@@ -160,22 +171,21 @@
 
                     transform-origin: 4px 0px;
 
-                    transition: transform 0.5s cubic-bezier(0.77,0.2,0.05,1.0),
-                    background 0.5s cubic-bezier(0.77,0.2,0.05,1.0),
+                    transition: transform 0.5s cubic-bezier(0.77, 0.2, 0.05, 1.0),
+                    background 0.5s cubic-bezier(0.77, 0.2, 0.05, 1.0),
                     opacity 0.55s ease;
 
-                    &:nth-last-child(1)
-                    {
+                    &:nth-last-child(1) {
                         transform-origin: 0% 100%;
                     }
                 }
             }
 
             &:checked {
-                +label {
+                + label {
                     display: block;
 
-                    +.row .sidebar {
+                    + .row .sidebar {
                         display: block !important;
                     }
 
@@ -184,14 +194,12 @@
                         transform: rotate(45deg) translate(-2px, -1px);
                         background: #eee;
 
-                        &:nth-last-child(2)
-                        {
+                        &:nth-last-child(2) {
                             opacity: 0;
                             transform: rotate(0deg) scale(0.2, 0.2);
                         }
 
-                        &:nth-last-child(1)
-                        {
+                        &:nth-last-child(1) {
                             transform: rotate(-45deg) translate(0, -1px);
                         }
                     }
