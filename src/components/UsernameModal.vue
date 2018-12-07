@@ -13,7 +13,7 @@
                     <div class="modal-body">
                         <div class="form-group">
                             <div v-if="error" class="alert alert-danger">Name cannot be empty!</div>
-                            <input ref="usernameInput" required class="form-control" v-model="_username" placeholder="Name"/>
+                            <input ref="usernameInput" required class="form-control" v-model="_username" placeholder="Name" maxlength="50" @keydown.enter="save()"/>
                         </div>
                     </div>
                     <div class="modal-footer">
