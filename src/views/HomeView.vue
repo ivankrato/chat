@@ -1,5 +1,5 @@
 <template>
-    <p>
-        Choose a room in the left sidebar.
+    <p class="alert alert-info">
+        Choose a room please.
     </p>
 </template>

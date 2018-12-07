@@ -91,6 +91,9 @@
         "dark": #35a79c,
         "success": #83d0c9
     );
+    $border-radius: 0;
+    $border-radius-lg: 0;
+    $border-radius-sm: 0;
 
     @import '~bootstrap/scss/bootstrap';
 

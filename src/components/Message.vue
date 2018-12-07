@@ -1,7 +1,7 @@
 <template>
     <div :class="'message alert mr-4 mb-3' + (my ? ' my alert-success' : '') + (loading ? ' loading' : '')">
         <div class="avatar" :style="{backgroundColor: message.color}"><span>{{ getAvatar(message) }}</span></div>
-        <div class="username">{{ message.username }}</div>
+        <div class="username">{{ message.username }} ({{ getDate(message) }})</div>
         {{ getMessage(message) }}
         <PulseLoader v-if="loading"/>
     </div>
@@ -38,6 +38,15 @@
                     }
                 }
                 return str;
+            },
+            getDate(message) {
+                return new Date(message.createdOn).toLocaleDateString('cs-CZ', {
+                    year: 'numeric',
+                    month: 'numeric',
+                    day: 'numeric',
+                    hour: 'numeric',
+                    minute: 'numeric'
+                });
             }
         }
     }
@@ -87,10 +96,9 @@
 
             padding-left: 1.25rem;
             padding-right: 3.5rem;
-            padding-top: 0.75rem;
 
             .username {
-                display: none;
+                left: 1.25rem;
             }
         }
 
