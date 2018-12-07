@@ -1,7 +1,7 @@
 <template>
     <div :class="'message alert mr-4 mb-3' + (my ? ' my alert-success' : '') + (message.error ? ' alert-danger error' : '') + (mention ? ' alert-warning' : '') + (loading ? ' loading' : '')">
         <div class="avatar" :style="{backgroundColor: message.color}"><span>{{ getAvatar(message) }}</span></div>
-        <div class="username">{{ message.username }} ({{ getDate(message) }})<strong v-if="message.error"> This message cannot be send. Please try again.</strong></div>
+        <div class="username" @click="$emit('mention')">{{ message.username }} ({{ getDate(message) }})<strong v-if="message.error"> This message cannot be send. Please try again.</strong></div>
         {{ getMessage(message)}}
         <PulseLoader v-if="loading && typeof message.error === 'undefined'"/>
     </div>
@@ -68,6 +68,7 @@
             top: 0.5rem;
             left: 3.5rem;
             color: #aaa;
+            cursor: pointer;
         }
 
         .avatar {

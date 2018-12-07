@@ -7,7 +7,7 @@
                 {{ message.username }}: {{ message.message }}
                 <PulseLoader/>
             </Message>
-            <Message v-for="message in messages" :message="message" :my="message.username === username" :mention="isMentioned(message)">
+            <Message v-for="message in messages" :message="message" :my="message.username === username" :mention="isMentioned(message)" @mention="mention(message.username)">
                 {{ message.username }}: {{ message.message }}
             </Message>
         </div>
@@ -132,6 +132,9 @@
                     return message.message.indexOf('@' + this.username) > -1;
                 }
                 return false;
+            },
+            mention(username) {
+                this.message += '@' + username;
             }
         },
         mounted() {
