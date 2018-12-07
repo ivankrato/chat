@@ -66,15 +66,9 @@
             async getMessages(append = true) {
                 if (append) {
                     try {
-                        let params = {};
-                        if (typeof this.messages[0] !== 'undefined') {
-                            params.createdSince = this.messages[0].createdOn;
-                        }
-                        let newMessages = (await axios.get(apiUrl + 'rooms/' + this.room.id + '/messages', {
-                            params: params
-                        })).data.messages;
+                        let newMessages = (await axios.get(apiUrl + 'rooms/' + this.room.id + '/messages')).data.messages;
                         this.createColors(newMessages);
-                        this.messages = newMessages.concat(this.messages);
+                        this.messages = newMessages;
                     }
                     catch (ex) {
                         console.error(ex);
